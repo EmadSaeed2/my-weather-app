@@ -7,32 +7,47 @@
 }
 
 .form-input {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     height: 40px;
     padding: 10px;
 }
 
 .history-button {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 #today {
     /* border: 1px solid rgb(86, 86, 86); */
     border-radius: 5px;
+    margin-top: 45px !important;
     padding: 10px;
-    -webkit-box-shadow: 1px 1px 10px -5px #000000;
-    box-shadow: 1px 1px 10px -5px #000000;
+    border: 1px solid rgb(0, 31, 68);
+    border-radius: .25rem;
 }
 
-.card {
-    -webkit-box-shadow: 1px 1px 10px -5px #000000;
-    box-shadow: 1px 1px 10px -5px #000000;
-    background-color: darkslategrey;
-
+.five-days-header {
+    margin-top: 20px;
 }
 
-.card-body h5,
-.card-body h6 {
+#forecast {
+    display: flex;
+    margin-top: 0;
+}
+
+.five-days-card {
+    flex: 1;
+    padding: 10px;
+    margin: 10px;
+    background-color: rgb(0, 31, 68);
+    border-radius: .25rem;
+}
+
+.five-days-card h4 {
     color: #fff !important;
-    margin-top: 10px !important;
+    margin-top: 15px;
+}
+
+.five-days-card h5 {
+    color: #fff !important;
+    margin: 10px auto 15px !important;
 }
