@@ -1,0 +1,38 @@
+.input-group,
+.form-input,
+.input-group-append,
+.search-button,
+.history-button {
+    width: 100% !important;
+}
+
+.form-input {
+    margin-bottom: 20px;
+    height: 40px;
+    padding: 10px;
+}
+
+.history-button {
+    margin-bottom: 20px;
+}
+
+#today {
+    /* border: 1px solid rgb(86, 86, 86); */
+    border-radius: 5px;
+    padding: 10px;
+    -webkit-box-shadow: 1px 1px 10px -5px #000000;
+    box-shadow: 1px 1px 10px -5px #000000;
+}
+
+.card {
+    -webkit-box-shadow: 1px 1px 10px -5px #000000;
+    box-shadow: 1px 1px 10px -5px #000000;
+    background-color: darkslategrey;
+
+}
+
+.card-body h5,
+.card-body h6 {
+    color: #fff !important;
+    margin-top: 10px !important;
+}
