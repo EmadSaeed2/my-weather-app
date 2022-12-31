@@ -17,13 +17,15 @@
     background: #aaa;
 }
 
-#today {
-    /* border: 1px solid rgb(86, 86, 86); */
-    border-radius: 5px;
+.currWeatherContainer {
     margin-top: 45px !important;
-    padding: 10px;
+    padding: 20px;
     border: 1px solid rgb(0, 31, 68);
     border-radius: .25rem;
+}
+
+.currWeatherIcon {
+    height: 50px;
 }
 
 .five-days-header {
