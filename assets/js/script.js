@@ -13,6 +13,7 @@ function getCurrentWeatherData(cityName) {
             .then(function (data) {
                 console.log(data);
             });
+
     } else {
         alert('Please enter a city name.');
     }
