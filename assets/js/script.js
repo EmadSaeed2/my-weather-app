@@ -13,8 +13,8 @@ function updateFiveDaysWeatherUI(fiveDaysData) {
 
     $.each(fiveDaysData.list, function (index, element) {
         console.log(element)
-        var date = moment(element.dt_txt, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY');
-        var hour = moment(element.dt_txt, 'YYYY-MM-DD hh:mm:ss').format('ha');
+        var date = moment(element.dt_txt, 'YYYY-MM-DD hh:mm:ss').add(fiveDaysData.city.timezone, 'seconds').format('DD/MM/YYYY');
+        var hour = moment(element.dt_txt, 'YYYY-MM-DD hh:mm:ss').add(fiveDaysData.city.timezone, 'seconds').format('ha');
         var fiveDaysIcon = `http://openweathermap.org/img/wn/${element.weather[0].icon}@2x.png`
         var fiveDaysTemp = 'Temp: ' + Math.round(element.main.temp) + ' \u2103';
         var fiveDaysWind = 'Wind: ' + element.wind.speed + ' KPH';
