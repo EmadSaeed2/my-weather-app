@@ -3,16 +3,33 @@ var apiKey = '318dd89627c7bbdd887f3385d00e0216';
 var currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?limit=1&units=metric&appid=${apiKey}&`;
 var fiveDaysWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?units=metric&appid=${apiKey}&`;
 
+// GET HISTORY DATA FROM LOCALSTORAGE
+var searchHistory = [];
+
+// function to display history data
+
+
+
+// Check if localStorage has searchHistory item if not, create it.
+if (!localStorage.getItem("searchHistory")) {
+    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+} else { // get data from localStorage
+    searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
+    $.each(searchHistory, function (index, hCity) {
+        var historyButton = `<button class="btn history-button">${hCity}</button>`
+        $('#history').append(historyButton);
+    });
+}
+
 // UPDATE THE UI WITH FIVE DAYS WEATHER
 function updateFiveDaysWeatherUI(fiveDaysData) {
     console.log('fiveDaysData', fiveDaysData);
 
     $('.five-days-header').removeClass('display-none');
     $('.five-days-header').addClass('display-block');
-
+    $('#forecast').html('');
 
     $.each(fiveDaysData.list, function (index, element) {
-        console.log(element)
         var date = moment(element.dt_txt, 'YYYY-MM-DD hh:mm:ss').add(fiveDaysData.city.timezone, 'seconds').format('DD/MM/YYYY');
         var hour = moment(element.dt_txt, 'YYYY-MM-DD hh:mm:ss').add(fiveDaysData.city.timezone, 'seconds').format('ha');
         var fiveDaysIcon = `http://openweathermap.org/img/wn/${element.weather[0].icon}@2x.png`
@@ -20,7 +37,6 @@ function updateFiveDaysWeatherUI(fiveDaysData) {
         var fiveDaysWind = 'Wind: ' + element.wind.speed + ' KPH';
         var fiveDaysHumidity = 'Humidity: ' + element.main.humidity + '%';
 
-        console.log(date)
         var fiveDaysWeather = `
         <div class="five-days-card">
             <h4 class="card-date">${date}</h4>
@@ -92,10 +108,28 @@ function getWeatherData(cityName) {
     }
 }
 
-
+// ON CLICK SEARCH BUTTON
 $('#search-button').click(function (e) {
     e.preventDefault();
     // GET USER INPUT
     var city = $('#search-input').val();
     getWeatherData(city)
+
+    // ADD CITY TO searchHistory
+    searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
+    if (!searchHistory.includes(city)) {
+        searchHistory.push(city);
+        localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+        var historyButton = `<button class="btn history-button">${city}</button>`
+        $('#history').append(historyButton);
+    }
+});
+
+// DeletesearchHistory
+$('.delete-search-history').click(function (e) {
+    e.preventDefault();
+    var searchHistory = [];
+    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+    $('#history').html('');
+
 });
