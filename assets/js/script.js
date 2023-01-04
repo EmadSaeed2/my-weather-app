@@ -1,31 +1,44 @@
 var apiKey = '318dd89627c7bbdd887f3385d00e0216';
 
 var currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?limit=1&units=metric&appid=${apiKey}&`;
-var fiveDaysWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?units=metric&appid=${apiKey}&`;
+var fiveDaysForecastUrl = `https://api.openweathermap.org/data/2.5/forecast?units=metric&appid=${apiKey}&`;
 
-// GET HISTORY DATA FROM LOCALSTORAGE
+var city = '';
+var validCity = false;
+
 var searchHistory = [];
 
-// function to display history data
-
-
-
-// Check if localStorage has searchHistory item if not, create it.
+// GET HISTORY DATA FROM LOCAL STORAGE TO DISPLAY SEARCHED CITIES
+// Check if localStorage has searchHistory item. if not, create it.
 if (!localStorage.getItem("searchHistory")) {
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
-} else { // get data from localStorage
+} else {
     searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
-    $.each(searchHistory, function (index, hCity) {
-        var historyButton = `<button class="btn history-button">${hCity}</button>`
+    $.each(searchHistory, function (index, city) {
+        var historyButton = `<button class="btn history-city-button">${city}</button>`
         $('#history').append(historyButton);
     });
 }
 
-// UPDATE THE UI WITH FIVE DAYS WEATHER
-function updateFiveDaysWeatherUI(fiveDaysData) {
+// FUNCTION TO ADD CITY TO SEARCH HISTORY
+function addCityToSearchHistory(city) {
+    searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
+    if (city && !searchHistory.includes(city) && validCity) {
+        searchHistory.push(city);
+        localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+        var historyButton = `<button class="btn history-city-button">${city}</button>`
+        $('#history').append(historyButton);
+    }
+
+    if (searchHistory.length > 0) {
+        $('.delete-search-history').addClass('display-block');
+    }
+}
+
+// FUNCTION TO UPDATE THE UI WITH FIVE DAYS WEATHER
+function updatefiveDaysForecastUI(fiveDaysData) {
     console.log('fiveDaysData', fiveDaysData);
 
-    $('.five-days-header').removeClass('display-none');
     $('.five-days-header').addClass('display-block');
     $('#forecast').html('');
 
@@ -37,7 +50,7 @@ function updateFiveDaysWeatherUI(fiveDaysData) {
         var fiveDaysWind = 'Wind: ' + element.wind.speed + ' KPH';
         var fiveDaysHumidity = 'Humidity: ' + element.main.humidity + '%';
 
-        var fiveDaysWeather = `
+        var fiveDaysForecast = `
         <div class="five-days-card">
             <h4 class="card-date">${date}</h4>
             <h5 class="card-date">${hour}</h5>
@@ -46,36 +59,38 @@ function updateFiveDaysWeatherUI(fiveDaysData) {
             <h5 class="card-weather">${fiveDaysWind}</h5>
             <h5 class="card-weather">${fiveDaysHumidity}</h5>
         </div>`
-        $('#forecast').append(fiveDaysWeather);
+        $('#forecast').append(fiveDaysForecast);
     });
 
 
 }
 
-// GET 5-DAYS WEATHER DATA
-function getFiveDaysWeatherData(currentData) {
+// FUNCTION TO GET 5-DAYS WEATHER DATA
+function getfiveDaysForecastData(currentData) {
     if (currentData) {
         var lon = currentData.coord.lon;
         var lat = currentData.coord.lat;
 
-        $.get(fiveDaysWeatherUrl + `lat=${lat}&lon=${lon}`)
+        $.get(fiveDaysForecastUrl + `lat=${lat}&lon=${lon}`)
             .then(function (fiveDaysData) {
-                updateFiveDaysWeatherUI(fiveDaysData);
+                updatefiveDaysForecastUI(fiveDaysData);
             })
     }
-
 }
 
 
 
-// UPDATE THE UI WITH THE CURRENT WEATHER
+// FUNCTION TO UPDATE THE UI WITH THE CURRENT WEATHER
 function updateCurrentWeatherUI(currData) {
     // console.log(currData);
+
+    // reset #today content
+    $('#today').html('');
 
     // get date with current timezone
     var today = moment().add(currData.timezone, 'seconds').format('DD/MM/YYYY');
 
-    var currCity = currData.name + ' - ' + currData.sys.country;
+    var currCity = currData.name;
     var currTemp = 'Temp: ' + Math.round(currData.main.temp) + ' \u2103';
     var currWind = 'Wind: ' + currData.wind.speed + ' KPH';
     var currHumidity = 'Humidity: ' + currData.main.humidity + '%';
@@ -95,14 +110,19 @@ function updateCurrentWeatherUI(currData) {
     $('#today').html(currentWeather);
 }
 
-// GET WEATHER DATA
-function getWeatherData(cityName) {
-    if (cityName) {
-        $.get(`${currentWeatherUrl}q=${cityName}`)
+// FUNCTION TO GET WEATHER DATA
+function getWeatherData(city) {
+    if (city) {
+        $.get(`${currentWeatherUrl}q=${city}`)
             .then(function (currentData) {
                 updateCurrentWeatherUI(currentData)
-                getFiveDaysWeatherData(currentData)
-            });
+                getfiveDaysForecastData(currentData)
+                // if get  valid responce will added to searched history
+                validCity = true;
+                addCityToSearchHistory(city)
+            }).fail(function () {
+                alert('Please enter a valid city name.');
+            });;
     } else {
         alert('Please enter a city name.');
     }
@@ -112,24 +132,27 @@ function getWeatherData(cityName) {
 $('#search-button').click(function (e) {
     e.preventDefault();
     // GET USER INPUT
-    var city = $('#search-input').val();
-    getWeatherData(city)
+    city = $('#search-input').val().toUpperCase();
 
-    // ADD CITY TO searchHistory
-    searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
-    if (!searchHistory.includes(city)) {
-        searchHistory.push(city);
-        localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
-        var historyButton = `<button class="btn history-button">${city}</button>`
-        $('#history').append(historyButton);
-    }
+    getWeatherData(city)
 });
 
-// DeletesearchHistory
+
+// ON CLICK HISTORY BUTTON
+$('.history-city-button').click(function (e) {
+    e.preventDefault();
+    var city = $(this).html();
+
+    console.log(city)
+    getWeatherData(city)
+
+});
+
+// ON CLICK DELETE SEARCH HISTORY
 $('.delete-search-history').click(function (e) {
     e.preventDefault();
     var searchHistory = [];
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
     $('#history').html('');
-
+    $(this).removeClass('.display-block');
 });

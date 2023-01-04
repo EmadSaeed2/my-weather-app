@@ -1,3 +1,11 @@
+body {
+    background-color: rgb(190, 234, 255);
+}
+
+.weather-header {
+    background-color: rgb(0, 31, 68);
+}
+
 .display-none {
     display: none;
 }
@@ -10,8 +18,14 @@
 .form-input,
 .input-group-append,
 .search-button,
-.history-button {
+.history-city-button {
     width: 100% !important;
+}
+
+.search-button,
+.search-button:hover {
+    background-color: rgb(0, 31, 68);
+    color: #fff;
 }
 
 .form-input {
@@ -20,7 +34,7 @@
     padding: 10px;
 }
 
-.history-button {
+.history-city-button {
     margin-bottom: 15px;
     background: #aaa;
 }
@@ -32,8 +46,8 @@
 .currWeatherContainer {
     margin-top: 45px !important;
     padding: 20px;
-    border: 1px solid rgb(0, 31, 68);
     border-radius: .25rem;
+    background-color: #fff;
 }
 
 .currWeatherIcon {
